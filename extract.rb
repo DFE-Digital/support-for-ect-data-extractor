@@ -3,13 +3,14 @@ require 'pry'
 require 'pry-byebug'
 
 require_relative 'db'
-require_relative 'programme'
-require_relative 'year'
-require_relative 'course_module'
-require_relative 'ect_lesson'
-require_relative 'ect_lesson_part'
-require_relative 'mentor_material'
-require_relative 'mentor_material_part'
+require_relative 'db/programme'
+require_relative 'db/year'
+require_relative 'db/course_module'
+require_relative 'db/ect_lesson'
+require_relative 'db/ect_lesson_part'
+require_relative 'db/mentor_material'
+require_relative 'db/mentor_material_part'
+require_relative 'debug'
 
 # The tables in the current serivice form a hiearachy of learning materials:
 #
@@ -69,4 +70,4 @@ core_induction_programmes.each do |cip|
   end
 end
 
-puts core_induction_programmes
+puts Debug.new.print(core_induction_programmes)
