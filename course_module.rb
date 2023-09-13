@@ -1,5 +1,6 @@
 class CourseModule
   attr_reader :id, :title, :ect_summary, :previous_module_id, :course_year_id, :term, :mentor_summary, :page_header
+  attr_accessor :ect_lessons
 
   def initialize(id:, title:, ect_summary:, previous_module_id:, course_year_id:, term:, mentor_summary:, page_header:)
     @id = id

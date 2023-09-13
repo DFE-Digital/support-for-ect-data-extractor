@@ -20,6 +20,22 @@ class Programme
 
         y.course_modules.each do |cm|
           output << debug(cm)
+
+          cm.ect_lessons.each do |l|
+            output << debug(l)
+
+            l.ect_lesson_parts.each do |lp|
+              output << debug(lp)
+            end
+
+            l.mentor_materials.each do |mm|
+              output << debug(mm)
+
+              mm.mentor_material_parts.each do |mmp|
+                output << debug(mmp)
+              end
+            end
+          end
         end
       end
     end
