@@ -1,4 +1,4 @@
-def query(query, columns, db=$db)
+def query(query, columns, db = $db)
   db.exec(query) do |rs|
     rs
       .map { |row| row.values_at(*columns) }

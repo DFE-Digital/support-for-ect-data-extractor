@@ -3,6 +3,8 @@ require 'pry'
 require 'pry-byebug'
 require_relative 'db'
 require_relative 'programme'
+require_relative 'year'
+require_relative 'course_module'
 
 # CURRENT STRUCTURE
 #
@@ -39,8 +41,14 @@ require_relative 'programme'
 
 $db = PG.connect(dbname: 'engage_and_learn')
 
-core_induction_programmes = query("select * from core_induction_programmes;", %w(id name)).map do |cip|
-  Programme.new(**cip)
+core_induction_programmes = Programme.all
+years = Year.all
+course_modules = CourseModule.all
+
+core_induction_programmes.each do |cip|
+  cip.years = years.select { |y| cip.id == y.core_induction_programme_id }.each do |y|
+    y.course_modules = course_modules.select { |cm| y.id == cm.course_year_id }
+  end
 end
 
-puts core_induction_programmes.map(&:name)
+puts core_induction_programmes
