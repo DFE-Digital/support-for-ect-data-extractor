@@ -1,5 +1,6 @@
 class Year
-  attr_reader :id, :title, :content, :mentor_title, :core_induction_programme_id, :position
+  attr_reader :id, :title, :mentor_title, :core_induction_programme_id, :position
+  attr_writer :content
   attr_accessor :course_modules
 
   def initialize(id:, title:, content:, mentor_title:, core_induction_programme_id:, position:)
@@ -17,6 +18,26 @@ class Year
   end
 
   def to_s
-    "  year: #{id}"
+    "  year: #{position}"
+  end
+
+  def year_name
+    "Year #{position}"
+  end
+
+  def summary
+    <<~SUMMARY
+      #{title}
+    SUMMARY
+  end
+
+  def content
+    <<~CONTENT
+      #{content}
+    CONTENT
+  end
+
+  def <=>(other)
+    position <=> other.position
   end
 end

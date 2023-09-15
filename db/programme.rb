@@ -14,4 +14,12 @@ class Programme
   def to_s
     "  year: #{id}"
   end
+
+  def name_with_dashes
+    @name.downcase.tr(" ", "-")
+  end
+
+  def filename(output_dir)
+    File.join(output_dir, "#{name_with_dashes}.md")
+  end
 end

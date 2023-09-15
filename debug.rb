@@ -1,4 +1,4 @@
-class Debug
+class DebugExport
   def print(programmes)
     "".tap do |output|
       programmes.each do |p|
@@ -33,4 +33,8 @@ class Debug
   def add_newline(str)
     "#{str}\n"
   end
+end
+
+def debug(str, level = 1)
+  puts (" " * (level * 2)) + str
 end

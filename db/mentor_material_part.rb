@@ -7,7 +7,7 @@ class MentorMaterialPart
     @content = content
     @previous_mentor_material_part_id = previous_mentor_material_part_id
     @mentor_material_id = mentor_material_id
-  end 
+  end
 
   def self.all(sql: "select * from mentor_material_parts;",
                projection: %w(id title content previous_mentor_material_part_id mentor_material_id))
