@@ -133,7 +133,10 @@ programmes.each do |p|
 
       # sometimes there are two modules per term so we need to group by the
       # term and then loop through the modules within
-      y.course_modules.group_by(&:term).each do |group, modules_in_term|
+      #
+      # we want the terms to be in the academic year order, which is autumn,
+      # spring, summer - thankfully this is also alphabetical order
+      y.course_modules.group_by(&:term).sort.each do |group, modules_in_term|
         f.puts(h3("#{group.capitalize} term"))
 
         modules_in_term.each do |cm|
