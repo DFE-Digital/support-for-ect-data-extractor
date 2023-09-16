@@ -120,16 +120,16 @@ programmes.each do |p|
   # └── some-programme.md
   #
   Dir.mkdir(File.join(output_dir, p.name_with_dashes))
-  File.open(p.filename(output_dir), "w") do |f|
+  File.open(p.filename(output_dir), "w") do |programme_file|
     # this file represents the programme's overview # and will
     # contain a listing of years, with each year having its
     # modules within
-    f.puts(frontmatter(p.name))
+    programme_file.puts(frontmatter(p.name))
 
     p.years.sort.each do |y|
-      f.puts(h2(y.year_name))
-      f.puts(y.summary)
-      f.puts(BLANK_LINE)
+      programme_file.puts(h2(y.year_name))
+      programme_file.puts(y.summary)
+      programme_file.puts(BLANK_LINE)
 
       # sometimes there are two modules per term so we need to group by the
       # term and then loop through the modules within
@@ -137,13 +137,28 @@ programmes.each do |p|
       # we want the terms to be in the academic year order, which is autumn,
       # spring, summer - thankfully this is also alphabetical order
       y.course_modules.group_by(&:term).sort.each do |group, modules_in_term|
-        f.puts(h3("#{group.capitalize} term"))
+        programme_file.puts(h3("#{group.capitalize} term"))
 
         modules_in_term.each do |cm|
-          f.puts(h4(cm.title))
+          programme_file.puts(h4(cm.title))
 
-          f.puts(cm.ect_summary)
-          f.puts(BLANK_LINE)
+          programme_file.puts(cm.ect_summary)
+          programme_file.puts(BLANK_LINE)
+
+          # if we haven't seen this year/module combo before create a directory
+          # for its contents
+          # directory_name = File.join(output_dir, p.name_with_dashes, cm.directory_name(y.position))
+          cm.directory_name(File.join(output_dir, p.name_with_dashes), y.position).tap do |cm_dir|
+            Dir.mkdir(cm_dir) unless Dir.exist?(cm_dir)
+
+            # within the directory we will create a file per lesson part, prefixed
+            # with the year number, like `week-3-self-study-activities.md
+            cm.ect_lessons.each do |l|
+              l.ect_lesson_parts.each do |lp|
+                File.open(File.join(cm_dir, lp.filename(l.week_number)), "w")
+              end
+            end
+          end
         end
       end
     end

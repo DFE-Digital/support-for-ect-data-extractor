@@ -29,4 +29,20 @@ class CourseModule
   def ect_summary
     Formatter.new(@ect_summary).tidy
   end
+
+  def directory_name(left, year)
+    right = "year-%<year>d-%<title>s" % {
+      year: year,
+      title: title_with_dashes
+    }
+
+    File.join(left, right)
+  end
+
+  def title_with_dashes
+    title.gsub(/(First|Second) half-term: /, "")
+         .gsub(/[^0-9a-z ]/i, "")
+         .gsub(" ", "-")
+         .downcase
+  end
 end

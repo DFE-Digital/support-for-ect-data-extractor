@@ -17,4 +17,16 @@ class ECTLessonPart
   def to_s
     "        lesson_part: #{id}"
   end
+
+  def title_with_dashes
+    title.gsub(" ", "-").downcase
+  end
+
+  def filename(week_number)
+    if week_number.positive?
+      "week-#{week_number}-#{title_with_dashes}.md"
+    else
+      "intro-#{title_with_dashes}.md"
+    end
+  end
 end

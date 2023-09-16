@@ -38,6 +38,14 @@ class ECTLesson
     @mentor_teacher_standards = mentor_teacher_standards
   end
 
+  def week_number
+    if (match = title.match(/Week (?<week>\d+)/))
+      match["week"].to_i
+    else
+      0
+    end
+  end
+
   def self.all(sql: "select * from course_lessons;",
                projection: %w(id title previous_lesson_id course_module_id completion_time_in_minutes ect_summary
                               mentor_summary position mentor_title ect_teacher_standards mentor_teacher_standards))
