@@ -136,8 +136,8 @@ programmes.each do |p|
       #
       # we want the terms to be in the academic year order, which is autumn,
       # spring, summer - thankfully this is also alphabetical order
-      y.course_modules.group_by(&:term).sort.each do |group, modules_in_term|
-        programme_file.puts(h3("#{group.capitalize} term"))
+      y.course_modules.group_by(&:term).sort.each do |term_name, modules_in_term|
+        programme_file.puts(h3("#{term_name.capitalize} term"))
 
         modules_in_term.each do |cm|
           programme_file.puts(h4(cm.title))
@@ -154,8 +154,15 @@ programmes.each do |p|
             # within the directory we will create a file per lesson part, prefixed
             # with the year number, like `week-3-self-study-activities.md
             cm.ect_lessons.each do |l|
+              # ect_lesson_parts are sorted using their previous_lesson_part_id
               l.ect_lesson_parts.each do |lp|
-                File.open(File.join(cm_dir, lp.filename(l.week_number)), "w")
+                File.open(File.join(cm_dir, lp.filename(term_name, l.week_number)), "w")
+              end
+
+              l.mentor_materials.each do |mm|
+                mm.mentor_material_parts.each do |mmp|
+                  File.open(File.join(cm_dir, mmp.filename(term_name, l.week_number)), "w")
+                end
               end
             end
           end

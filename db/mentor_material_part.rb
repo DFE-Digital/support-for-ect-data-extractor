@@ -17,4 +17,16 @@ class MentorMaterialPart
   def to_s
     "          mentor_material_part: #{id}"
   end
+
+  def title_with_dashes
+    title.gsub(%r{\s|/}, "-").downcase
+  end
+
+  def filename(term, week_number)
+    if week_number.positive?
+      "#{term}-week-#{week_number}-mentor-#{title_with_dashes}.md"
+    else
+      "intro-mentor-#{title_with_dashes}.md"
+    end
+  end
 end

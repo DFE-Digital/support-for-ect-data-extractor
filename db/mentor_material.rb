@@ -1,6 +1,6 @@
 class MentorMaterial
   attr_reader :id, :title, :course_lesson_id, :position, :completion_time_in_minutes
-  attr_accessor :mentor_material_parts
+  attr_writer :mentor_material_parts
 
   def initialize(id:, title:, course_lesson_id:, position:, completion_time_in_minutes:)
     @id = id
@@ -17,5 +17,20 @@ class MentorMaterial
 
   def to_s
     "        mentor_material: #{id}"
+  end
+
+  def mentor_material_parts
+    @sorted_mentor_material_parts = @mentor_material_parts.each_with_object([]) do |p, a|
+      # if there's no previous entry it must be the first, so prepend it
+      if p.previous_mentor_material_part_id.nil?
+        a.prepend(p)
+      # if the previous id already exists, this comes immediately after it
+      elsif (index = a.index { |e| e.id == p.previous_mentor_material_part_id })
+        a.insert(index + 1, p)
+      # we haven't seen the previous one yet, so add it on the end
+      else
+        a.append(p)
+      end
+    end
   end
 end

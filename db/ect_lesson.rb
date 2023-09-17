@@ -10,7 +10,8 @@ class ECTLesson
               :mentor_title,
               :ect_teacher_standards,
               :mentor_teacher_standards
-  attr_accessor :ect_lesson_parts, :mentor_materials
+  attr_writer :ect_lesson_parts
+  attr_accessor :mentor_materials
 
   def initialize(
     id:,
@@ -54,5 +55,20 @@ class ECTLesson
 
   def to_s
     "      lesson: #{id}"
+  end
+
+  def ect_lesson_parts
+    @ect_lesson_parts.each_with_object([]) do |p, a|
+      # if there's no previous entry it must be the first, so prepend it
+      if p.previous_lesson_part_id.nil?
+        a.prepend(p)
+      # if the previous id already exists, this comes immediately after it
+      elsif (index = a.index { |e| e.id == p.previous_lesson_part_id })
+        a.insert(index + 1, p)
+      # we haven't seen the previous one yet, so add it on the end
+      else
+        a.append(p)
+      end
+    end
   end
 end

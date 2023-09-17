@@ -22,9 +22,9 @@ class ECTLessonPart
     title.gsub(" ", "-").downcase
   end
 
-  def filename(week_number)
+  def filename(term, week_number)
     if week_number.positive?
-      "week-#{week_number}-#{title_with_dashes}.md"
+      "#{term}-week-#{week_number}-#{title_with_dashes}.md"
     else
       "intro-#{title_with_dashes}.md"
     end
