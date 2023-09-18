@@ -24,7 +24,7 @@ class ECTLessonPart
 
   def filename(term, week_number)
     if week_number.positive?
-      "#{term}-week-#{week_number}-#{title_with_dashes}.md"
+      "#{term}-week-#{week_number}-ect-#{title_with_dashes}.md"
     else
       "intro-#{title_with_dashes}.md"
     end

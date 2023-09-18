@@ -116,9 +116,8 @@ programmes.each do |p|
   # same name:
   #
   # output
-  # ├── some-programme/
-  # └── some-programme.md
-  #
+  # ├── some-programme/   🟢
+  # └── some-programme.md 🟢
   Dir.mkdir(File.join(output_dir, p.name_with_dashes))
   File.open(p.filename(output_dir), "w") do |programme_file|
     # this file represents the programme's overview # and will
@@ -149,16 +148,32 @@ programmes.each do |p|
           # for its contents
           # directory_name = File.join(output_dir, p.name_with_dashes, cm.directory_name(y.position))
           cm.directory_name(File.join(output_dir, p.name_with_dashes), y.position).tap do |cm_dir|
+            # output
+            # ├── some-programme
+            # │  └── year-1-module-a 🟢
+            # └── some-programme.md
             Dir.mkdir(cm_dir) unless Dir.exist?(cm_dir)
 
-            # within the directory we will create a file per lesson part, prefixed
-            # with the year number, like `week-3-self-study-activities.md
             cm.ect_lessons.each do |l|
-              # ect_lesson_parts are sorted using their previous_lesson_part_id
+              # within the directory we will create a file per lesson part, prefixed
+              # with the year number, like `week-3-self-study-activities.md
+              # output
+              # ├── some-programme
+              # │  └── year-1-module-a
+              # │     ├── autumn-week-1-ect-module-overview.md                 🟢
+              # │     ├── autumn-week-1-ect-reflect.md                         🟢
+              # │     └── autumn-week-1-ect-video-and-module-introduction.md   🟢
+              # └── some-programme.md
               l.ect_lesson_parts.each do |lp|
                 File.open(File.join(cm_dir, lp.filename(term_name, l.week_number)), "w")
               end
 
+              # output
+              # ├── ambition-institute
+              # │  └── year-1-module-a
+              # │     ├── autumn-week-1-mentor-context-specific-meeting.md 🟢
+              # │     └── autumn-week-1-mentor-contracting-meeting.md      🟢
+              # └── some-programme.md
               l.mentor_materials.each do |mm|
                 mm.mentor_material_parts.each do |mmp|
                   File.open(File.join(cm_dir, mmp.filename(term_name, l.week_number)), "w")
