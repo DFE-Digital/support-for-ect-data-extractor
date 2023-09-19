@@ -165,7 +165,9 @@ programmes.each do |p|
               # │     └── autumn-week-1-ect-video-and-module-introduction.md   🟢
               # └── some-programme.md
               l.ect_lesson_parts.each do |lp|
-                File.open(File.join(cm_dir, lp.filename(term_name, l.week_number)), "w")
+                File.open(File.join(cm_dir, lp.filename(term_name, l.week_number)), "w") do |lesson_part_file|
+                  lesson_part_file.puts(lp.content)
+                end
               end
 
               # output
@@ -176,7 +178,9 @@ programmes.each do |p|
               # └── some-programme.md
               l.mentor_materials.each do |mm|
                 mm.mentor_material_parts.each do |mmp|
-                  File.open(File.join(cm_dir, mmp.filename(term_name, l.week_number)), "w")
+                  File.open(File.join(cm_dir, mmp.filename(term_name, l.week_number)), "w") do |mentor_part_file|
+                    mentor_part_file.puts(mmp.content)
+                  end
                 end
               end
             end
