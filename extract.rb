@@ -16,7 +16,8 @@ require_relative 'db/mentor_material'
 require_relative 'db/mentor_material_part'
 require_relative 'debug'
 require_relative 'formatter'
-require_relative 'md'
+require_relative 'md/util'
+require_relative 'md/formatter'
 
 BLANK_LINE = "\n"
 
@@ -167,7 +168,7 @@ programmes.each do |p|
               # └── some-programme.md
               l.ect_lesson_parts.each do |lp|
                 File.open(File.join(cm_dir, lp.filename(term_name, l.week_number)), "w") do |lesson_part_file|
-                  lesson_part_file.puts(lp.content)
+                  lesson_part_file.puts(Formatter.new(lp.content).tidy)
                 end
               end
 
@@ -180,7 +181,7 @@ programmes.each do |p|
               l.mentor_materials.each do |mm|
                 mm.mentor_material_parts.each do |mmp|
                   File.open(File.join(cm_dir, mmp.filename(term_name, l.week_number)), "w") do |mentor_part_file|
-                    mentor_part_file.puts(mmp.content)
+                    mentor_part_file.puts(Formatter.new(mmp.content).tidy)
                   end
                 end
               end
