@@ -4,6 +4,7 @@ require 'pg'
 require 'fileutils'
 require 'pry'
 require 'pry-byebug'
+require 'reverse_markdown'
 
 require_relative 'db'
 require_relative 'db/programme'
