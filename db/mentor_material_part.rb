@@ -22,11 +22,11 @@ class MentorMaterialPart
     title.gsub(%r{\s|/}, "-").downcase
   end
 
-  def filename(term, week_number)
+  def filename(term, week_number, original: false)
     if week_number.positive?
-      "#{term}-week-#{week_number}-mentor-#{title_with_dashes}.md"
+      "#{term}-week-#{week_number}-mentor-#{title_with_dashes}#{'.original' if original}.md"
     else
-      "intro-mentor-#{title_with_dashes}.md"
+      "intro-mentor-#{title_with_dashes}#{'.original' if original}.md"
     end
   end
 end

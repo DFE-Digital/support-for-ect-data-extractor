@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+DEBUG = ENV.fetch('DEBUG', false)
+
 require 'pg'
 require 'fileutils'
 require 'pry'
@@ -15,7 +17,6 @@ require_relative 'db/ect_lesson_part'
 require_relative 'db/mentor_material'
 require_relative 'db/mentor_material_part'
 require_relative 'debug'
-require_relative 'formatter'
 require_relative 'md/util'
 require_relative 'md/formatter'
 
@@ -170,6 +171,22 @@ programmes.each do |p|
                 File.open(File.join(cm_dir, lp.filename(term_name, l.week_number)), "w") do |lesson_part_file|
                   lesson_part_file.puts(Formatter.new(lp.content).tidy)
                 end
+
+                next unless DEBUG
+
+                # output
+                # ├── some-programme
+                # │  └── year-1-module-a
+                # │     ├── autumn-week-1-ect-module-overview.md
+                # │     ├── autumn-week-1-ect-module-overview.original.md                 🟢
+                # │     ├── autumn-week-1-ect-reflect.md
+                # │     ├── autumn-week-1-ect-reflect.original.md                         🟢
+                # │     ├── autumn-week-1-ect-video-and-module-introduction.md
+                # │     └── autumn-week-1-ect-video-and-module-introduction.original.md   🟢
+                # └── some-programme.md
+                File.open(File.join(cm_dir, lp.filename(term_name, l.week_number, original: true)), "w") do |lesson_part_file|
+                  lesson_part_file.puts(lp.content)
+                end
               end
 
               # output
@@ -182,6 +199,20 @@ programmes.each do |p|
                 mm.mentor_material_parts.each do |mmp|
                   File.open(File.join(cm_dir, mmp.filename(term_name, l.week_number)), "w") do |mentor_part_file|
                     mentor_part_file.puts(Formatter.new(mmp.content).tidy)
+                  end
+
+                  next unless DEBUG
+
+                  # output
+                  # ├── ambition-institute
+                  # │  └── year-1-module-a
+                  # │     ├── autumn-week-1-mentor-context-specific-meeting.original.md 🟢
+                  # │     ├── autumn-week-1-mentor-context-specific-meeting.md
+                  # │     ├── autumn-week-1-mentor-contracting-meeting.original.md      🟢
+                  # │     └── autumn-week-1-mentor-contracting-meeting.md
+                  # └── some-programme.md
+                  File.open(File.join(cm_dir, mmp.filename(term_name, l.week_number, original: true)), "w") do |mentor_part_file|
+                    mentor_part_file.puts(mmp.content)
                   end
                 end
               end

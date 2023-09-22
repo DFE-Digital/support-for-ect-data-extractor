@@ -19,6 +19,9 @@ class Formatter
       replace_html_tags!(tag)
     end
 
+    remove_emboldened_headings!
+    add_empty_lines_beneath_headings!
+
     @output
   end
 
@@ -48,12 +51,18 @@ private
         .gsub("$Details", "{details}")
         .gsub("$EndDetails", "{/details}")
         .gsub(/\$Heading(.*?)\$EndHeading/m) { |h| h.delete_prefix("$Heading").delete_suffix("$EndHeading").strip + "." }
-        .gsub(/\$Content(.*?)\$EndContent/m) { |c| rm(c.delete_prefix("$Content").delete_suffix("$EndContent")) }
+        .gsub(/\$Content(.*?)\$EndContent/m) { |c| c.delete_prefix("$Content").delete_suffix("$EndContent") }
     end
   end
 
   def replace_accordion!
-    # TODO: implement this 🪗
+    @output.gsub!(/\$Accordion(.*?)\$EndAccordion/m) do |inner|
+      inner
+        .gsub("$Accordion", "")
+        .gsub("$EndAccordion", "")
+        .gsub(/\$Heading(.*?)\$EndHeading/m) { |h| h3(h.delete_prefix("$Heading").delete_suffix("$EndHeading").gsub("\n", "")) }
+        .gsub(/\$Content(.*?)\$EndContent/m) { |c| rm(c.delete_prefix("$Content").delete_suffix("$EndContent")) }
+    end
   end
 
   def remove_dollar_capital_i!
@@ -70,6 +79,23 @@ private
 
   def remove_multiple_blank_lines!
     @output.squeeze!("\n")
+  end
+
+  def remove_emboldened_headings!
+    %w(# ## ### #### ##### ######).each do |heading_prefix|
+      @output.gsub!(/^#{heading_prefix} \*\*(.*?)\*\*$/) do
+        "#{heading_prefix} #{Regexp.last_match[1]}"
+      end
+    end
+  end
+
+  def add_empty_lines_beneath_headings!
+    # TODO
+    # @output.gsub!(/^###+ (.*)$/) { "#{Regexp.last_match[0]}\n" }
+  end
+
+  def add_spaces_above_and_below_lists!
+    # TODO
   end
 
   def rm(content)
