@@ -126,7 +126,7 @@ programmes.each do |p|
     # this file represents the programme's overview # and will
     # contain a listing of years, with each year having its
     # modules within
-    programme_file.puts(frontmatter(p.name))
+    programme_file.puts(frontmatter(title: p.name))
 
     p.years.sort.each do |y|
       programme_file.puts(h2(y.year_name))
@@ -142,20 +142,23 @@ programmes.each do |p|
         programme_file.puts(h3("#{term_name.capitalize} term"))
 
         modules_in_term.each do |cm|
-          programme_file.puts(h4(cm.title))
+          programme_file.puts(h4(cm.link(text: cm.title, year: y.position, path: p.name_with_dashes)))
 
           programme_file.puts(cm.ect_summary)
           programme_file.puts(BLANK_LINE)
 
           # if we haven't seen this year/module combo before create a directory
           # for its contents
-          # directory_name = File.join(output_dir, p.name_with_dashes, cm.directory_name(y.position))
-          cm.directory_name(File.join(output_dir, p.name_with_dashes), y.position).tap do |cm_dir|
+          cm.directory_name(left: File.join(output_dir, p.name_with_dashes), year: y.position).tap do |cm_dir|
             # output
             # ├── some-programme
             # │  └── year-1-module-a 🟢
             # └── some-programme.md
             Dir.mkdir(cm_dir) unless Dir.exist?(cm_dir)
+            File.open("#{cm_dir}.md", "w") do |cm_file|
+              cm_file.puts(frontmatter(title: "hi"))
+            end
+            # TODO: add a file for the course and module
 
             cm.ect_lessons.each do |l|
               # within the directory we will create a file per lesson part, prefixed
@@ -169,6 +172,7 @@ programmes.each do |p|
               # └── some-programme.md
               l.ect_lesson_parts.each do |lp|
                 File.open(File.join(cm_dir, lp.filename(term_name, l.week_number)), "w") do |lesson_part_file|
+                  lesson_part_file.puts(frontmatter(title: lp.title))
                   lesson_part_file.puts(Formatter.new(lp.content).tidy)
                 end
 

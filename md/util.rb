@@ -1,7 +1,7 @@
-def frontmatter(text)
+def frontmatter(title:)
   <<~FRONTMATTER
     ---
-    title: #{text}
+    title: "#{title}"
     ---
 
   FRONTMATTER

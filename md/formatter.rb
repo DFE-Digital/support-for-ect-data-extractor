@@ -21,6 +21,7 @@ class Formatter
 
     remove_emboldened_headings!
     add_empty_lines_beneath_headings!
+    fix_consecutive_but_separate_lists!
 
     @output
   end
@@ -95,6 +96,10 @@ private
   end
 
   def add_spaces_above_and_below_lists!
+    # TODO
+  end
+
+  def fix_consecutive_but_separate_lists!
     # TODO
   end
 

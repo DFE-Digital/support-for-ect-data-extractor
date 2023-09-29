@@ -30,7 +30,7 @@ class CourseModule
     Formatter.new(@ect_summary).tidy
   end
 
-  def directory_name(left, year)
+  def directory_name(year:, left: "")
     right = "year-%<year>d-%<title>s" % {
       year: year,
       title: title_with_dashes
@@ -44,5 +44,9 @@ class CourseModule
          .gsub(/[^0-9a-z ]/i, "")
          .gsub(" ", "-")
          .downcase
+  end
+
+  def link(year:, path:, text: title)
+    "[%<text>s](/%<link>s)" % { text: text, link: directory_name(left: path, year: year) }
   end
 end
