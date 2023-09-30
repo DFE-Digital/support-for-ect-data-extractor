@@ -22,11 +22,21 @@ class ECTLessonPart
     title.gsub(" ", "-").downcase
   end
 
-  def filename(term, week_number, original: false)
+  def filename(term, week_number, original: false, with_extension: true)
+    ext = with_extension ? ".md" : nil
+
     if week_number.positive?
-      "#{term}-week-#{week_number}-ect-#{title_with_dashes}#{'.original' if original}.md"
+      "#{term}-week-#{week_number}-ect-#{title_with_dashes}#{'.original' if original}#{ext}"
     else
-      "intro-#{title_with_dashes}#{'.original' if original}.md"
+      "intro-#{title_with_dashes}#{'.original' if original}#{ext}"
     end
+  end
+
+  def previous_part(others)
+    others.detect { |other| other.id == previous_lesson_part_id }
+  end
+
+  def next_part(others)
+    others.detect { |other| other.previous_lesson_part_id == id }
   end
 end

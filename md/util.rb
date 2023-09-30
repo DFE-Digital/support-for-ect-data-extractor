@@ -1,7 +1,14 @@
-def frontmatter(title:)
+def frontmatter(**kwargs)
+  fm = kwargs.map do |k, v|
+    next if v.nil?
+    next if v.empty?
+
+    %(#{k}: "#{v}")
+  end
+
   <<~FRONTMATTER
     ---
-    title: "#{title}"
+    #{fm.compact.join("\n")}
     ---
 
   FRONTMATTER

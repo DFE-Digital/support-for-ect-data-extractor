@@ -149,13 +149,14 @@ programmes.each do |p|
 
           # if we haven't seen this year/module combo before create a directory
           # for its contents
-          cm.directory_name(left: File.join(output_dir, p.name_with_dashes), year: y.position).tap do |cm_dir|
+          cm.directory_name(left: File.join(p.name_with_dashes), year: y.position).tap do |cm_dir|
+            full_cm_dir = File.join(output_dir, cm_dir)
             # output
             # ├── some-programme
             # │  └── year-1-module-a 🟢
             # └── some-programme.md
-            Dir.mkdir(cm_dir) unless Dir.exist?(cm_dir)
-            File.open("#{cm_dir}.md", "w") do |cm_file|
+            Dir.mkdir(full_cm_dir) unless Dir.exist?(full_cm_dir)
+            File.open("#{full_cm_dir}.md", "w") do |cm_file|
               cm_file.puts(frontmatter(title: "hi"))
             end
             # TODO: add a file for the course and module
@@ -171,8 +172,31 @@ programmes.each do |p|
               # │     └── autumn-week-1-ect-video-and-module-introduction.md   🟢
               # └── some-programme.md
               l.ect_lesson_parts.each do |lp|
-                File.open(File.join(cm_dir, lp.filename(term_name, l.week_number)), "w") do |lesson_part_file|
-                  lesson_part_file.puts(frontmatter(title: lp.title))
+                # each lesson part has a pagination 'next' and 'previous' link
+                # if there is preceeding or succeeding lesson. we'll set these
+                # using frontmatter values next_title, next_path, previous_title,
+                # and previous_path.
+                #
+                # we'll build hashes here and splat them in below
+                prev_fm = if (prev_lp = lp.previous_part(l.ect_lesson_parts))
+                            {
+                              previous_title: prev_lp.title,
+                              previous_path: File.join("/", cm_dir, prev_lp.filename(term_name, l.week_number, with_extension: false))
+                            }
+                          else
+                            {}
+                          end
+                next_fm = if (next_lp = lp.next_part(l.ect_lesson_parts))
+                            {
+                              next_title: next_lp.title,
+                              next_path: File.join("/", cm_dir, next_lp.filename(term_name, l.week_number, with_extension: false))
+                            }
+                          else
+                            {}
+                          end
+
+                File.open(File.join(full_cm_dir, lp.filename(term_name, l.week_number)), "w") do |lesson_part_file|
+                  lesson_part_file.puts(frontmatter(title: lp.title, **prev_fm, **next_fm))
                   lesson_part_file.puts(Formatter.new(lp.content).tidy)
                 end
 
@@ -188,7 +212,7 @@ programmes.each do |p|
                 # │     ├── autumn-week-1-ect-video-and-module-introduction.md
                 # │     └── autumn-week-1-ect-video-and-module-introduction.original.md   🟢
                 # └── some-programme.md
-                File.open(File.join(cm_dir, lp.filename(term_name, l.week_number, original: true)), "w") do |lesson_part_file|
+                File.open(File.join(full_cm_dir, lp.filename(term_name, l.week_number, original: true)), "w") do |lesson_part_file|
                   lesson_part_file.puts(lp.content)
                 end
               end
@@ -201,7 +225,7 @@ programmes.each do |p|
               # └── some-programme.md
               l.mentor_materials.each do |mm|
                 mm.mentor_material_parts.each do |mmp|
-                  File.open(File.join(cm_dir, mmp.filename(term_name, l.week_number)), "w") do |mentor_part_file|
+                  File.open(File.join(full_cm_dir, mmp.filename(term_name, l.week_number)), "w") do |mentor_part_file|
                     mentor_part_file.puts(Formatter.new(mmp.content).tidy)
                   end
 
@@ -215,7 +239,7 @@ programmes.each do |p|
                   # │     ├── autumn-week-1-mentor-contracting-meeting.original.md      🟢
                   # │     └── autumn-week-1-mentor-contracting-meeting.md
                   # └── some-programme.md
-                  File.open(File.join(cm_dir, mmp.filename(term_name, l.week_number, original: true)), "w") do |mentor_part_file|
+                  File.open(File.join(full_cm_dir, mmp.filename(term_name, l.week_number, original: true)), "w") do |mentor_part_file|
                     mentor_part_file.puts(mmp.content)
                   end
                 end
