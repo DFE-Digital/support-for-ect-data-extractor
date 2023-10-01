@@ -22,11 +22,21 @@ class MentorMaterialPart
     title.gsub(%r{\s|/}, "-").downcase
   end
 
-  def filename(term, week_number, original: false)
+  def filename(term, week_number, original: false, with_extension: true)
+    ext = with_extension ? ".md" : nil
+
     if week_number.positive?
-      "#{term}-week-#{week_number}-mentor-#{title_with_dashes}#{'.original' if original}.md"
+      "#{term}-week-#{week_number}-mentor-#{title_with_dashes}#{'.original' if original}#{ext}"
     else
       "intro-mentor-#{title_with_dashes}#{'.original' if original}.md"
     end
+  end
+
+  def previous_part(others)
+    others.detect { |other| other.id == previous_mentor_material_part_id }
+  end
+
+  def next_part(others)
+    others.detect { |other| other.previous_mentor_material_part_id == id }
   end
 end

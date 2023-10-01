@@ -225,7 +225,26 @@ programmes.each do |p|
               # └── some-programme.md
               l.mentor_materials.each do |mm|
                 mm.mentor_material_parts.each do |mmp|
+                  # similar to lesson parts above, each mentor material part has a next and previous
+                  # part - other than the first and last which have nothing
+                  prev_fm = if (prev_mmp = mmp.previous_part(mm.mentor_material_parts))
+                              {
+                                previous_title: prev_mmp.title,
+                                previous_path: File.join("/", cm_dir, prev_mmp.filename(term_name, l.week_number, with_extension: false))
+                              }
+                            else
+                              {}
+                            end
+                  next_fm = if (next_mmp = mmp.next_part(mm.mentor_material_parts))
+                              {
+                                next_title: next_mmp.title,
+                                next_path: File.join("/", cm_dir, next_mmp.filename(term_name, l.week_number, with_extension: false))
+                              }
+                            else
+                              {}
+                            end
                   File.open(File.join(full_cm_dir, mmp.filename(term_name, l.week_number)), "w") do |mentor_part_file|
+                    mentor_part_file.puts(frontmatter(title: mmp.title, **prev_fm, **next_fm))
                     mentor_part_file.puts(Formatter.new(mmp.content).tidy)
                   end
 
