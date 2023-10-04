@@ -28,7 +28,7 @@ class ECTLessonPart
     if week_number.positive?
       "#{term}-week-#{week_number}-ect-#{title_with_dashes}#{'.original' if original}#{ext}"
     else
-      "intro-#{title_with_dashes}#{'.original' if original}#{ext}"
+      "intro-ect-#{title_with_dashes}#{'.original' if original}#{ext}"
     end
   end
 

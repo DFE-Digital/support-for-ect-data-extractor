@@ -33,4 +33,18 @@ class MentorMaterial
       end
     end
   end
+
+  def title_with_dashes
+    title.gsub(" ", "-").downcase
+  end
+
+  def filename(term, week_number, original: false, with_extension: false)
+    ext = with_extension ? ".md" : nil
+
+    if week_number.positive?
+      "#{term}-week-#{week_number}-mentor-#{title_with_dashes}#{'.original' if original}#{ext}"
+    else
+      "intro-mentor-#{title_with_dashes}#{'.original' if original}#{ext}"
+    end
+  end
 end

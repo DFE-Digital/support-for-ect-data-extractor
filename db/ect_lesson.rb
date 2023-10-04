@@ -33,7 +33,7 @@ class ECTLesson
     @completion_time_in_minutes = completion_time_in_minutes
     @ect_summary = ect_summary
     @mentor_summary = mentor_summary
-    @position = position
+    @position = position.to_i
     @mentor_title = mentor_title
     @ect_teacher_standards = ect_teacher_standards
     @mentor_teacher_standards = mentor_teacher_standards

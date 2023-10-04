@@ -157,9 +157,45 @@ programmes.each do |p|
             # └── some-programme.md
             Dir.mkdir(full_cm_dir) unless Dir.exist?(full_cm_dir)
             File.open("#{full_cm_dir}.md", "w") do |cm_file|
-              cm_file.puts(frontmatter(title: "hi"))
+              cm_file.puts(frontmatter(title: %(#{y.year_name}: #{cm.title}), heading: cm.title, caption: y.year_name))
+              cm_file.puts(BLANK_LINE)
+              cm_file.puts(cm.ect_summary)
+              cm_file.puts(BLANK_LINE)
+
+              # output
+              # ├── some-programme
+              # │  ├── year-1-module-a
+              # │  └── year-1-module-a.md 🟢
+              # └── some-programme.md
+              cm.ect_lessons.each do |l|
+                cm_file.puts(h2(l.title))
+
+                cm_file.puts(h3("ECT summary"))
+                cm_file.puts(l.ect_summary)
+
+                cm_file.puts(BLANK_LINE)
+                cm_file.puts(h4("Lessons"))
+                l.ect_lesson_parts.each.with_index(1) do |lp, i|
+                  File.join('/', cm_dir, lp.filename(term_name, l.week_number, with_extension: false)).tap do |link|
+                    cm_file.puts(%{#{i}. [#{lp.title}](#{link})})
+                  end
+                end
+                cm_file.puts(BLANK_LINE)
+
+                cm_file.puts(h3("Mentor summary"))
+                cm_file.puts(l.mentor_summary)
+                cm_file.puts(BLANK_LINE)
+
+                cm_file.puts(h4("Mentor materials"))
+                l.mentor_materials.each.with_index(1) do |mm, i|
+                  File.join('/', cm_dir, mm.filename(term_name, l.week_number, with_extension: false)).tap do |link|
+                    cm_file.puts(%{#{i}. [#{mm.title}](#{link})})
+                  end
+                end
+
+                cm_file.puts(BLANK_LINE)
+              end
             end
-            # TODO: add a file for the course and module
 
             cm.ect_lessons.each do |l|
               # within the directory we will create a file per lesson part, prefixed

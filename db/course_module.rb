@@ -1,6 +1,6 @@
 class CourseModule
   attr_reader :id, :title, :previous_module_id, :course_year_id, :term, :mentor_summary, :page_header
-  attr_accessor :ect_lessons
+  attr_writer :ect_lessons
 
   def initialize(id:, title:, ect_summary:, previous_module_id:, course_year_id:, term:, mentor_summary:, page_header:)
     @id = id
@@ -20,6 +20,10 @@ class CourseModule
 
   def to_s
     "    course_module: #{id}"
+  end
+
+  def ect_lessons
+    @ect_lessons.sort_by(&:position)
   end
 
   def term_name

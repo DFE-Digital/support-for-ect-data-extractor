@@ -63,6 +63,8 @@ private
         .gsub("$EndAccordion", "")
         .gsub(/\$Heading(.*?)\$EndHeading/m) { |h| h3(h.delete_prefix("$Heading").delete_suffix("$EndHeading").gsub("\n", "")) }
         .gsub(/\$Content(.*?)\$EndContent/m) { |c| rm(c.delete_prefix("$Content").delete_suffix("$EndContent")) }
+        .gsub(/\$Content(.*?)\$EndContent/m) { |c| rm(c.delete_prefix("$Content").delete_suffix("$EndContent")) }
+        .gsub(/\$Summary(.*?)\$EndSummary/m) { |c| rm(c.delete_prefix("$Summary").delete_suffix("$EndSummary")) }
     end
   end
 
