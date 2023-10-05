@@ -42,8 +42,22 @@ private
 
   def replace_youtube!
     @output.gsub!(/\$YoutubeVideo(.*?)\$EndYoutubeVideo/m) do |inner|
-      inner.delete_prefix("$YoutubeVideo").delete_suffix("$EndYoutubeVideo")
+      inner_without_delimiters = inner.delete_prefix("$YoutubeVideo").delete_suffix("$EndYoutubeVideo")
+
+      code = if inner.include?("https://www.youtube.com")
+               inner_without_delimiters.match(%r{https://www.youtube.com/watch\?v=(.*?)[)?&]})[1]
+             else
+               inner_without_delimiters.match(%r{https://(?:www.)?youtu.be/(.*)[)?&]})[1]
+             end
+
+      build_youtube_embed(code)
     end
+  end
+
+  def build_youtube_embed(code)
+    <<~EMBED
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/#{code}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    EMBED
   end
 
   def replace_details!
