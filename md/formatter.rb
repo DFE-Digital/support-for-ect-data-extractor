@@ -51,8 +51,14 @@ private
       inner
         .gsub("$Details", "{details}")
         .gsub("$EndDetails", "{/details}")
-        .gsub(/\$Heading(.*?)\$EndHeading/m) { |h| h.delete_prefix("$Heading").delete_suffix("$EndHeading").strip + "." }
         .gsub(/\$Content(.*?)\$EndContent/m) { |c| c.delete_prefix("$Content").delete_suffix("$EndContent") }
+        .gsub(/\$Heading(.*?)\$EndHeading/m) do |heading_text|
+          heading_text
+            .delete_prefix("$Heading")
+            .delete_suffix("$EndHeading")
+            .strip
+            .tap { |s| s.concat(".") unless s.end_with?(".") }
+        end
     end
   end
 
