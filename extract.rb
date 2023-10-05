@@ -189,7 +189,7 @@ programmes.each do |p|
                 cm_file.puts(h4("Mentor materials"))
                 l.mentor_materials.each.with_index(1) do |mm, i|
                   File.join('/', cm_dir, mm.filename(term_name, l.week_number, with_extension: false)).tap do |link|
-                    cm_file.puts(%{#{i}. [#{mm.title}](#{link})})
+                    cm_file.puts(%{#{i}. [#{mm.title_without_week}](#{link})})
                   end
                 end
 

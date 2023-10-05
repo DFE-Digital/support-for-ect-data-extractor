@@ -15,6 +15,12 @@ class MentorMaterial
     query(sql, projection).map { |ml| new(**ml) }
   end
 
+  def title_without_week
+    # NOTE: we cannot use String#delete_prefix here because it doesn't support regepxs 😞
+
+    title.gsub(/Week \d+: /, "")
+  end
+
   def to_s
     "        mentor_material: #{id}"
   end
