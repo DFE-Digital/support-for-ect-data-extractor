@@ -232,7 +232,14 @@ programmes.each do |p|
                           end
 
                 File.open(File.join(full_cm_dir, lp.filename(term_name, l.week_number)), "w") do |lesson_part_file|
-                  lesson_part_file.puts(frontmatter(title: lp.title, **prev_fm, **next_fm))
+                  lesson_part_file.puts(
+                    frontmatter(
+                      title: lp.title,
+                      total_lesson_completion_time: l.completion_time_in_minutes,
+                      **prev_fm,
+                      **next_fm
+                    )
+                  )
                   lesson_part_file.puts(Formatter.new(lp.content).tidy)
                 end
 
