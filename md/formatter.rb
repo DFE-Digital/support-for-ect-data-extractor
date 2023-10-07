@@ -12,6 +12,7 @@ class Formatter
 
     replace_details!
     replace_accordion!
+    replace_figure!
     remove_br!
     remove_empty_tags!
 
@@ -85,6 +86,31 @@ private
         .gsub(/\$Content(.*?)\$EndContent/m) { |c| rm(c.delete_prefix("$Content").delete_suffix("$EndContent")) }
         .gsub(/\$Content(.*?)\$EndContent/m) { |c| rm(c.delete_prefix("$Content").delete_suffix("$EndContent")) }
         .gsub(/\$Summary(.*?)\$EndSummary/m) { |c| rm(c.delete_prefix("$Summary").delete_suffix("$EndSummary")) }
+    end
+  end
+
+  def replace_figure!
+    @output.gsub!(/\$Figure(.*?)\$EndFigure/m) do |inner|
+      alt =  inner.match(/\$Alt(?<alt>.*?)\$EndAlt/m)['alt']
+      url =  inner.match(/\$URL(?<url>.*?)\$EndURL/m)['url']
+      caption = inner.match(/\$Caption(?<caption>.*?)\$EndCaption/m)['caption']
+
+      if !caption.strip.empty?
+        <<~FIGURE
+          <figure>
+            <img url="#{url.strip}" alt="#{alt.strip}" />
+            <figcaption>
+              #{caption.strip}
+            </figcaption>
+          </figure>
+        FIGURE
+      else
+        <<~FIGURE
+          <figure>
+            <img url="#{url.strip}" alt="#{alt.strip}" />
+          </figure>
+        FIGURE
+      end
     end
   end
 
