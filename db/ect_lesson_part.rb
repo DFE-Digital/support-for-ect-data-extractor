@@ -19,7 +19,7 @@ class ECTLessonPart
   end
 
   def title_with_dashes
-    title.gsub(" ", "-").downcase.squeeze("-")
+    title.gsub(" ", "-").gsub(":", "-").downcase.squeeze("-")
   end
 
   def filename(term, week_number, original: false, with_extension: true)

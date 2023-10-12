@@ -186,11 +186,8 @@ programmes.each do |p|
                 cm_file.puts(l.mentor_summary)
                 cm_file.puts(BLANK_LINE)
 
-                cm_file.puts(h4("Mentor materials"))
-                l.mentor_materials.each.with_index(1) do |mm, i|
-                  File.join('/', cm_dir, mm.filename(term_name, l.week_number, with_extension: false)).tap do |link|
-                    cm_file.puts(%{#{i}. [#{mm.title_without_week}](#{link})})
-                  end
+                File.join('/', cm_dir, MentorMaterial.filename(term_name, l.week_number)).tap do |link|
+                  cm_file.puts("[View mentor materials](#{link})")
                 end
 
                 cm_file.puts(BLANK_LINE)
@@ -263,46 +260,28 @@ programmes.each do |p|
               # output
               # ├── ambition-institute
               # │  └── year-1-module-a
-              # │     ├── autumn-week-1-mentor-context-specific-meeting.md 🟢
-              # │     └── autumn-week-1-mentor-contracting-meeting.md      🟢
+              # │     └── autumn-week-1-mentor-materials.md 🟢
               # └── some-programme.md
-              l.mentor_materials.each do |mm|
-                mm.mentor_material_parts.each do |mmp|
-                  # similar to lesson parts above, each mentor material part has a next and previous
-                  # part - other than the first and last which have nothing
-                  prev_fm = if (prev_mmp = mmp.previous_part(mm.mentor_material_parts))
-                              {
-                                previous_title: prev_mmp.title,
-                                previous_path: File.join("/", cm_dir, prev_mmp.filename(term_name, l.week_number, with_extension: false))
-                              }
-                            else
-                              {}
-                            end
-                  next_fm = if (next_mmp = mmp.next_part(mm.mentor_material_parts))
-                              {
-                                next_title: next_mmp.title,
-                                next_path: File.join("/", cm_dir, next_mmp.filename(term_name, l.week_number, with_extension: false))
-                              }
-                            else
-                              {}
-                            end
-                  File.open(File.join(full_cm_dir, mmp.filename(term_name, l.week_number)), "w") do |mentor_part_file|
-                    mentor_part_file.puts(frontmatter(title: mmp.title, **prev_fm, **next_fm))
-                    mentor_part_file.puts(Formatter.new(mmp.content).tidy)
-                  end
+              mm_filename = MentorMaterial.filename(term_name, l.week_number, with_extension: true)
+              File.open(File.join(full_cm_dir, mm_filename), "w") do |mentor_material_file|
+                mentor_material_file.puts(
+                  frontmatter(
+                    title: "#{y.year_name} #{term_name.capitalize} week #{l.week_number} mentor materials",
+                    heading: "Mentor materials",
+                    caption: "#{term_name.capitalize} week #{l.week_number}"
+                  )
+                )
 
-                  next unless DEBUG
+                mentor_material_file.puts(BLANK_LINE)
 
-                  # output
-                  # ├── ambition-institute
-                  # │  └── year-1-module-a
-                  # │     ├── autumn-week-1-mentor-context-specific-meeting.original.md 🟢
-                  # │     ├── autumn-week-1-mentor-context-specific-meeting.md
-                  # │     ├── autumn-week-1-mentor-contracting-meeting.original.md      🟢
-                  # │     └── autumn-week-1-mentor-contracting-meeting.md
-                  # └── some-programme.md
-                  File.open(File.join(full_cm_dir, mmp.filename(term_name, l.week_number, original: true)), "w") do |mentor_part_file|
-                    mentor_part_file.puts(mmp.content)
+                l.mentor_materials.each do |mm|
+                  # occasionally a lesson has more than one mentor material
+                  mentor_material_file.puts(h2(mm.title_without_week))
+
+                  mm.mentor_material_parts.each do |mmp|
+                    mentor_material_file.puts(h3(mmp.title))
+                    mentor_material_file.puts(Formatter.new(mmp.content).tidy)
+                    mentor_material_file.puts(BLANK_LINE)
                   end
                 end
               end

@@ -26,31 +26,26 @@ class MentorMaterial
   end
 
   def mentor_material_parts
-    @sorted_mentor_material_parts = @mentor_material_parts.each_with_object([]) do |p, a|
-      # if there's no previous entry it must be the first, so prepend it
-      if p.previous_mentor_material_part_id.nil?
-        a.prepend(p)
-      # if the previous id already exists, this comes immediately after it
-      elsif (index = a.index { |e| e.id == p.previous_mentor_material_part_id })
-        a.insert(index + 1, p)
-      # we haven't seen the previous one yet, so add it on the end
-      else
-        a.append(p)
+    return @mentor_material_parts if @mentor_material_parts.size == 1
+
+    @mentor_material_parts.select { |p| p.previous_mentor_material_part_id.nil? }.tap do |out|
+      loop do
+        next_part = @mentor_material_parts.find { |p| p.previous_mentor_material_part_id == out.last.id }
+
+        break if next_part.nil?
+
+        out.append(next_part)
       end
     end
   end
 
   def title_with_dashes
-    title.gsub(" ", "-").downcase.squeeze("-")
+    title_without_week.gsub(" ", "-").gsub(":", "-").squeeze("-").downcase
   end
 
-  def filename(term, week_number, original: false, with_extension: false)
-    ext = with_extension ? ".md" : nil
+  def self.filename(term, week_number, with_extension: false)
+    ext = with_extension ? ".md" : ""
 
-    if week_number.positive?
-      "#{term}-week-#{week_number}-mentor-#{title_with_dashes}#{'.original' if original}#{ext}"
-    else
-      "intro-mentor-#{title_with_dashes}#{'.original' if original}#{ext}"
-    end
+    "#{term}-week-#{week_number}-mentor-materials#{ext}"
   end
 end
