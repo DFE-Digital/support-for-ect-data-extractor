@@ -16,7 +16,7 @@ class Programme
   end
 
   def name_with_dashes
-    @name.downcase.tr(" ", "-")
+    @name.downcase.tr(" ", "-").squeeze("-")
   end
 
   def filename(output_dir)

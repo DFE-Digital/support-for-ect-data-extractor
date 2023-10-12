@@ -47,6 +47,7 @@ class CourseModule
     title.gsub(/(First|Second) half-term: /, "")
          .gsub(/[^0-9a-z ]/i, "")
          .gsub(" ", "-")
+         .squeeze("-")
          .downcase
   end
 

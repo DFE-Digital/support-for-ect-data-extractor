@@ -41,7 +41,7 @@ class MentorMaterial
   end
 
   def title_with_dashes
-    title.gsub(" ", "-").downcase
+    title.gsub(" ", "-").downcase.squeeze("-")
   end
 
   def filename(term, week_number, original: false, with_extension: false)
