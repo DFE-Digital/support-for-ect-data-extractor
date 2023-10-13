@@ -14,6 +14,7 @@ class Formatter
     replace_accordion!
     replace_figure!
     remove_br!
+    remove_section!
     remove_empty_tags!
 
     %w(h3 h4 ul ol em strong).each do |tag|
@@ -120,6 +121,10 @@ private
 
   def remove_cta!
     @output.gsub!("$CTA", "")
+  end
+
+  def remove_section!
+    @output.gsub!("$Section", "\n")
   end
 
   def replace_html_tags!(tag)
