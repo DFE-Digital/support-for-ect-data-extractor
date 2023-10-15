@@ -25,6 +25,8 @@ class Formatter
     add_empty_lines_beneath_headings!
     fix_consecutive_but_separate_lists!
 
+    fix_material_paths!
+
     @output
   end
 
@@ -141,6 +143,13 @@ private
         "#{heading_prefix} #{Regexp.last_match[1]}"
       end
     end
+  end
+
+  def fix_material_paths!
+    old_prefix = "https://paas-s3-broker-prod-lon-ac28a7a5-2bc2-4d3b-8d16-a88eaef65526.s3.amazonaws.com/"
+    new_prefix = "/assets/materials/"
+
+    @output.gsub!(old_prefix, new_prefix)
   end
 
   def add_empty_lines_beneath_headings!
