@@ -1,7 +1,6 @@
 class Year
   attr_reader :id, :title, :mentor_title, :core_induction_programme_id, :position
-  attr_writer :content
-  attr_accessor :course_modules
+  attr_writer :content, :course_modules
 
   def initialize(id:, title:, content:, mentor_title:, core_induction_programme_id:, position:)
     @id = id
@@ -39,5 +38,19 @@ class Year
 
   def <=>(other)
     position <=> other.position
+  end
+
+  def course_modules
+    return @course_modules if @course_modules.size == 1
+
+    @course_modules.select { |cm| cm.previous_module_id.nil? }.tap do |out|
+      loop do
+        next_part = @course_modules.find { |cm| cm.previous_module_id == out.last.id }
+
+        break if next_part.nil?
+
+        out.append(next_part)
+      end
+    end
   end
 end
