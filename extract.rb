@@ -129,20 +129,16 @@ programmes.each do |p|
     programme_file.puts(frontmatter(title: p.name))
 
     p.years.sort.each do |y|
-      programme_file.puts(h2(y.year_name))
-      programme_file.puts(y.summary)
-      programme_file.puts(BLANK_LINE)
-
       # sometimes there are two modules per term so we need to group by the
       # term and then loop through the modules within
       #
       # we want the terms to be in the academic year order, which is autumn,
       # spring, summer - thankfully this is also alphabetical order
       y.course_modules.group_by(&:term).sort.each do |term_name, modules_in_term|
-        programme_file.puts(h3("#{term_name.capitalize} term"))
+        programme_file.puts(h2("#{y.year_name}: #{term_name.capitalize} term"))
 
         modules_in_term.each do |cm|
-          programme_file.puts(h4(cm.link(text: cm.title, year: y.position, path: p.name_with_dashes)))
+          programme_file.puts(h3(cm.link(text: cm.title, year: y.position, path: p.name_with_dashes)))
 
           programme_file.puts(cm.ect_summary)
           programme_file.puts(BLANK_LINE)
@@ -170,11 +166,11 @@ programmes.each do |p|
               cm.ect_lessons.each do |l|
                 cm_file.puts(h2(l.title))
 
-                cm_file.puts(h3("ECT summary"))
                 cm_file.puts(l.ect_summary)
+                cm_file.puts(BLANK_LINE)
+                cm_file.puts("Duration: #{l.completion_time_in_minutes} minutes.")
 
                 cm_file.puts(BLANK_LINE)
-                cm_file.puts(h4("Lessons"))
                 l.ect_lesson_parts.each.with_index(1) do |lp, i|
                   File.join('/', cm_dir, lp.filename(term_name, l.week_number, with_extension: false)).tap do |link|
                     cm_file.puts(%{#{i}. [#{lp.title}](#{link})})
@@ -182,7 +178,8 @@ programmes.each do |p|
                 end
                 cm_file.puts(BLANK_LINE)
 
-                cm_file.puts(h3("Mentor summary"))
+                # FIXME: stop listing mentor materials when there aren't any
+                cm_file.puts(h3("Mentors"))
                 cm_file.puts(l.mentor_summary)
                 cm_file.puts(BLANK_LINE)
 
@@ -232,7 +229,6 @@ programmes.each do |p|
                   lesson_part_file.puts(
                     frontmatter(
                       title: lp.title,
-                      total_lesson_completion_time: l.completion_time_in_minutes,
                       **prev_fm,
                       **next_fm
                     )

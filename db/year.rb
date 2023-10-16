@@ -24,12 +24,6 @@ class Year
     "Year #{position}"
   end
 
-  def summary
-    <<~SUMMARY
-      #{title}
-    SUMMARY
-  end
-
   def content
     <<~CONTENT
       #{content}
